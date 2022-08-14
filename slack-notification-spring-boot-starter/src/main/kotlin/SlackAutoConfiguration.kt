@@ -2,28 +2,27 @@ package io.wafflestudio.spring.slack
 
 import io.wafflestudio.spring.slack.webflux.SlackWebExceptionHandler
 import io.wafflestudio.spring.slack.webmvc.SlackExceptionResolver
-import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+@EnableConfigurationProperties(SlackNotificationProperties::class)
+@ConditionalOnProperty(name = ["slack.notification.token"])
 @Configuration
 class SlackAutoConfiguration {
 
     @Bean
-    fun slackClient(): SlackClient {
-        // TODO
-        return object : SlackClient {
-            private val logger = LoggerFactory.getLogger(javaClass)
+    fun slackClient(properties: SlackNotificationProperties): SlackClient {
+        val options = SlackClientOptions(
+            token = properties.token,
+            channelName = properties.channelName,
+            maxQueueSize = properties.queueSize,
+            enabled = properties.enabled
+        )
 
-            override fun isEnabled() {
-                logger.debug("isEnabled")
-            }
-
-            override fun captureEvent(e: SlackEvent) {
-                logger.debug("captureEvent e: {}", e)
-            }
-        }
+        return AsyncSlackClient(options)
     }
 
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
@@ -39,7 +38,7 @@ class SlackAutoConfiguration {
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     @Configuration
     class SlackWebfluxConfiguration(
-        private val slackClient: SlackClient
+        private val slackClient: SlackClient,
     ) {
 
         @Bean
