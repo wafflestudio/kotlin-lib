@@ -27,11 +27,14 @@ class SlackAutoConfiguration {
 
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     @Configuration
-    class SlackWebMvcConfiguration {
+    class SlackWebMvcConfiguration(
+        private val slackClient: SlackClient,
+    ) {
 
         @Bean
         fun exceptionResolver(): SlackExceptionResolver {
-            TODO()
+            // TODO()
+            return SlackExceptionResolver(slackClient)
         }
     }
 

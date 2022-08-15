@@ -29,15 +29,13 @@ class AsyncSlackClient(
 
     private fun doSend(e: SlackEvent) {
         // TODO
-        logger.debug("doSend event : {}", e)
-
         slack.methods(options.token)
             .filesUpload { builder ->
                 builder.channels(listOf(options.channelName))
                     .filetype("text")
-                    .filename("test.txt")
-                    .content("content.")
-                    .initialComment("initialComment.")
+                    .filename("error.txt")
+                    .content(e.message)
+                    .initialComment(e.title)
             }
     }
 
