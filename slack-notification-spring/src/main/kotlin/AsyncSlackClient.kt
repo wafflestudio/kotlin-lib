@@ -28,7 +28,6 @@ class AsyncSlackClient(
     }
 
     private fun doSend(e: SlackEvent) {
-        // TODO
         slack.methods(options.token)
             .filesUpload { builder ->
                 builder.channels(listOf(options.channelName))

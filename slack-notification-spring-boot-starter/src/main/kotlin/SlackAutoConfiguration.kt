@@ -33,7 +33,6 @@ class SlackAutoConfiguration {
 
         @Bean
         fun exceptionResolver(): SlackExceptionResolver {
-            // TODO()
             return SlackExceptionResolver(slackClient)
         }
     }
@@ -46,7 +45,6 @@ class SlackAutoConfiguration {
 
         @Bean
         fun exceptionHandler(): SlackWebExceptionHandler {
-            // TODO
             return SlackWebExceptionHandler(slackClient)
         }
     }
