@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @EnableConfigurationProperties(SlackNotificationProperties::class)
-@ConditionalOnProperty(name = ["slack.notification.token"])
+@ConditionalOnProperty(name = ["slack.notification.token", "slack.notification.channel_name"])
 @Configuration
 class SlackAutoConfiguration {
 
