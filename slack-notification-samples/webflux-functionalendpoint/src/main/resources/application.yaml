@@ -1,0 +1,8 @@
+logging:
+  level:
+    io.wafflestudio: debug
+
+slack:
+  notification:
+    token: ${SLACK_TOKEN}
+    channel_name: ${CHANNEL_NAME}
