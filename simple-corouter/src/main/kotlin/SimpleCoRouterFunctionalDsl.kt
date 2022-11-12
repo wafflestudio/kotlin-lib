@@ -12,7 +12,7 @@ class SimpleCoRouterFunctionalDsl internal constructor(
 
     private val routeDefinitions = mutableMapOf<RequestInfo, suspend (ServerRequest) -> ServerResponse>()
 
-    fun GET(pattern: String, f: suspend (ServerRequest) -> ServerResponse, params: KClass<out RequestParams>) {
+    fun GET(pattern: String, f: suspend (ServerRequest) -> ServerResponse, params: KClass<out RequestParams>? = null) {
         routeDefinitions[RequestInfo(Method.GET, pattern, params)] = f
     }
 
