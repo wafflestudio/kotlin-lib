@@ -4,6 +4,7 @@ import io.wafflestudio.spring.corouter.SimpleCoRouterDefinition.Method
 import io.wafflestudio.spring.corouter.SimpleCoRouterDefinition.RequestInfo
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import kotlin.reflect.KClass
 
 class SimpleCoRouterFunctionalDsl internal constructor(
     private val init: (SimpleCoRouterFunctionalDsl.() -> Unit),
@@ -11,8 +12,8 @@ class SimpleCoRouterFunctionalDsl internal constructor(
 
     private val routeDefinitions = mutableMapOf<RequestInfo, suspend (ServerRequest) -> ServerResponse>()
 
-    fun GET(pattern: String, f: suspend (ServerRequest) -> ServerResponse) {
-        routeDefinitions[RequestInfo(Method.GET, pattern)] = f
+    fun GET(pattern: String, f: suspend (ServerRequest) -> ServerResponse, params: KClass<out RequestParams>) {
+        routeDefinitions[RequestInfo(Method.GET, pattern, params)] = f
     }
 
     fun POST(pattern: String, f: suspend (ServerRequest) -> ServerResponse) {

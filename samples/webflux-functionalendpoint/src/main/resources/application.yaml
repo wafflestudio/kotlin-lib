@@ -4,5 +4,5 @@ logging:
 
 slack:
   notification:
-    token: ${SLACK_TOKEN}
-    channel_name: ${CHANNEL_NAME}
+    token: ""
+    channel_name: ""
