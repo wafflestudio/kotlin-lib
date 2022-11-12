@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.info.Info
 import io.wafflestudio.spring.corouter.RequestContext
 import io.wafflestudio.spring.corouter.RequestContextResolver
 import io.wafflestudio.spring.corouter.RequestGetParams
+import io.wafflestudio.spring.corouter.RequestHeader
+import io.wafflestudio.spring.corouter.RequestPath
 import io.wafflestudio.spring.corouter.simpleCoRouter
 import kotlinx.coroutines.currentCoroutineContext
 import org.springframework.context.annotation.Bean
@@ -34,7 +36,7 @@ class SimpleCoRouterConfig {
 
     @Bean
     fun router1() = simpleCoRouter {
-        GET("/user", ::handleRequest, UserParams::class)
+        GET("/user/{userId}", ::handleRequest, UserParams::class)
     }
 
     suspend fun handleRequest(request: ServerRequest): ServerResponse {
@@ -46,7 +48,7 @@ class SimpleCoRouterConfig {
 
     @Component
     class UserContextResolver : RequestContextResolver {
-        override suspend fun resolveContext(serverRequest: ServerRequest): UserContext = UserContext(1)
+        override suspend fun resolveContext(serverRequest: ServerRequest): UserContext? = UserContext(1)
     }
 
     data class UserContext(
@@ -60,7 +62,10 @@ class SimpleCoRouterConfig {
     }
 
     data class UserParams(
-        val id: Long,
+        @RequestHeader
+        val header: String,
+        @RequestPath
+        val userId: Long,
         val name: String?,
     ) : RequestGetParams() {
         override val key: CoroutineContext.Key<*> = UserParams

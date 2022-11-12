@@ -1,5 +1,6 @@
 package io.wafflestudio.spring.corouter
 
+import io.swagger.v3.oas.annotations.enums.ParameterIn
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createType
@@ -10,13 +11,31 @@ sealed class RequestParams : CoroutineContext.Element
 
 abstract class RequestGetParams : RequestParams()
 
+enum class RequestParameterType {
+    QUERY, PATH, HEADER
+}
+
 internal fun KClass<out RequestGetParams>.accept(builder: org.springdoc.core.fn.builders.operation.Builder) {
+    val annotations = members.filter { it.annotations.isNotEmpty() }
+        .associate { it.name to it.annotations }
+
     builder.apply {
         primaryConstructor?.parameters?.forEach {
             parameter(
                 org.springdoc.core.fn.builders.parameter.Builder.parameterBuilder()
-                    .required(!it.type.isMarkedNullable)
                     .name(it.name)
+                    .required(!it.type.isMarkedNullable)
+                    .`in`(
+                        when {
+                            annotations[it.name]?.any { it.annotationClass == RequestHeader::class }
+                                ?: false -> ParameterIn.HEADER
+
+                            annotations[it.name]?.any { it.annotationClass == RequestPath::class }
+                                ?: false -> ParameterIn.PATH
+
+                            else -> ParameterIn.QUERY
+                        }
+                    )
                     .schema(
                         org.springdoc.core.fn.builders.schema.Builder.schemaBuilder()
                             .type(
@@ -24,7 +43,7 @@ internal fun KClass<out RequestGetParams>.accept(builder: org.springdoc.core.fn.
                                     String::class.createType() -> "string"
                                     Int::class.createType(), Long::class.createType() -> "integer"
                                     Boolean::class.createType() -> "boolean"
-                                    else -> error("")
+                                    else -> throw InvalidDefinitionException("${it.type} is not supported.")
                                 }
                             )
                     )
