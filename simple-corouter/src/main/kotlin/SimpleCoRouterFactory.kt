@@ -60,15 +60,21 @@ internal class SimpleCoRouterFactory(
                     }
 
                     Method.POST -> {
-                        docBuilder.POST(pattern, asHandlerFunction(block)) {}
+                        docBuilder.POST(pattern, asHandlerFunction(block)) {
+                            // TODO
+                        }
                     }
 
                     Method.PATCH -> {
-                        docBuilder.PATCH(pattern, asHandlerFunction(block)) {}
+                        docBuilder.PATCH(pattern, asHandlerFunction(block)) {
+                            // TODO
+                        }
                     }
 
                     Method.DELETE -> {
-                        docBuilder.DELETE(pattern, asHandlerFunction(block)) {}
+                        docBuilder.DELETE(pattern, asHandlerFunction(block)) {
+                            // TODO
+                        }
                     }
                 }
             }

@@ -43,12 +43,13 @@ class SimpleCoRouterConfig {
         UserContext.getOrNull()?.also(::println)
         UserParams.getOrNull()?.also(::println)
 
-        return ServerResponse.ok().bodyValueAndAwait(Unit)
+        return ServerResponse.ok().bodyValueAndAwait(UserParams.getOrNull() ?: Unit)
     }
 
     @Component
     class UserContextResolver : RequestContextResolver {
-        override suspend fun resolveContext(serverRequest: ServerRequest): UserContext? = UserContext(1)
+        override suspend fun resolveContext(serverRequest: ServerRequest): UserContext? =
+            serverRequest.headers().firstHeader("header")?.toLongOrNull()?.let { UserContext(1) }
     }
 
     data class UserContext(
